@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * 设计令牌：与 App 的 Material 3 配色保持一致
+ * 来源：hello-android/app/src/main/java/com/example/hellojump/ui/theme/Color.kt
+ */
+@theme {
+  --color-brand: #1565c0; /* Primary40 */
+  --color-brand-strong: #0d47a1;
+  --color-brand-container: #d3e3ff; /* PrimaryContainer90 */
+  --color-on-brand-container: #001a41; /* OnPrimaryContainer10 */
+  --color-accent: #00658f; /* Secondary40 */
+  --color-accent-container: #c7e7ff; /* SecondaryContainer90 */
+
+  --color-ink: #1a1c1e; /* 正文 */
+  --color-muted: #5a6270; /* OnSurfaceVariant70 */
+  --color-canvas: #f7f9fc; /* Surface95 */
+  --color-line: #e4e9f0;
+
+  --color-gold: #c8952b;
+  --color-silver: #8d99a8;
+  --color-bronze: #b0703c;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑",
+    "Noto Sans CJK SC", "Source Han Sans SC", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    "Courier New", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* 顶部导航是 sticky 的，锚点跳转时留出空间 */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-container);
+    color: var(--color-on-brand-container);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* 通用卡片 */
+  .card {
+    @apply rounded-2xl border border-line bg-white;
+  }
+
+  /* 主按钮 */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3
+           text-sm font-medium text-white transition-colors hover:bg-brand-strong
+           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand;
+  }
+
+  /* 次按钮 */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-line
+           bg-white px-6 py-3 text-sm font-medium text-ink transition-colors
+           hover:border-brand hover:text-brand focus-visible:outline-2
+           focus-visible:outline-offset-2 focus-visible:outline-brand;
+  }
+
+  /* 章节容器 */
+  .shell {
+    @apply mx-auto w-full max-w-6xl px-5;
+  }
 }

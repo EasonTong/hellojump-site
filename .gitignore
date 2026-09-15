@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# 但 .env.example 要进仓库：它只有占位符，没有任何真实密钥
+!.env.example
 
 # vercel
 .vercel
