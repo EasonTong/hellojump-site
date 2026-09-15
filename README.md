@@ -147,3 +147,55 @@ website/
       （运营主体、联系邮箱、生效日期、适用法律、素材授权等）。
       确认完再移除 `DraftBanner` 与 `Todo` 标记。
 - [ ] 若站点要上自定义域名，补充 `app/layout.tsx` 里的 `metadataBase` 与 sitemap。
+
+---
+
+## GitHub Pages 部署
+
+站点是**静态导出**（`output: "export"`），托管在 GitHub Pages：
+
+```
+https://easontong.github.io/hellojump-site/
+https://easontong.github.io/hellojump-site/privacy/    ← 上架 Play 要填的隐私政策 URL
+```
+
+### 为什么是静态导出
+
+GitHub Pages 只能托管静态文件、没有 Node 服务端。带来的取舍：
+
+| | |
+| --- | --- |
+| **代价** | 没有 ISR / `revalidate` —— 榜单与公告在**构建时固化成快照**，改完不会立刻反映到线上 |
+| **补偿** | `.github/workflows/deploy-pages.yml` 每小时定时重建一次；后台改完公告想立刻生效，去 Actions 页面手动跑一次 `workflow_dispatch` |
+
+### 关键配置（改错了会白屏）
+
+`next.config.ts` 里的 **`basePath` / `assetPrefix`**：项目页挂在 `/hellojump-site/` **子路径**下，
+不加前缀的话页面 HTML 能打开，但所有 `/_next/*` 静态资源会 404 —— 表现是**白屏**。
+前缀由 `NEXT_PUBLIC_BASE_PATH` 控制：CI 里设为 `/hellojump-site`，本地留空。
+
+`public/.nojekyll` 也要保留：防止托管侧忽略 `_next` 目录。
+
+### 本地开发与预览
+
+```bash
+npm run dev                      # 开发（HMR，数据每次请求实时取，不受静态导出影响）
+
+# 想按线上 URL 结构预览导出结果：
+NEXT_PUBLIC_BASE_PATH=/hellojump-site npm run build
+mkdir -p ~/pages-preview && cp -r out ~/pages-preview/hellojump-site
+python -m http.server 3002 --directory ~/pages-preview
+# 然后访问 http://localhost:3002/hellojump-site/
+```
+
+> 静态导出后 **`npm run start` 不再可用** —— 那是给 Node 服务端的。
+
+### CI 需要的仓库密钥
+
+`Settings → Secrets and variables → Actions` 里两个（构建时会被打进产物，其中 anon key 本来就是公开信息）：
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+缺任何一个，构建仍然会成功，但页面数据全空（data 层取不到数据时返回空数组，走空状态）——
+这是刻意的设计，为的是构建不因网络问题失败。**所以「构建绿」不等于「数据对」，要看页面。**
