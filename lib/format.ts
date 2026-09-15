@@ -101,6 +101,9 @@ export function formatRelativeTime(
 /**
  * 安装包体积：字节 → MB。
  *
+ * 用 **十进制**（1000 进制）而不是 1024：Android / Google Play 展示安装包体积就是这个口径，
+ * 用 1024 的话同一个文件在官网上会变成 35.2 MB、在 Play 上却是 36.9 MB，用户会以为下错了。
+ *
  * 没值返回 `null` 而不是 `"0 MB"` —— 调用方据此决定整个元素显不显示，
  * 免得后台还没填体积时页面上出现一个「0 MB」。
  */
@@ -109,5 +112,5 @@ export function formatSize(
 ): string | null {
   const n = toNumber(bytes);
   if (n === null || n <= 0) return null;
-  return `${(n / 1024 / 1024).toFixed(1)} MB`;
+  return `${(n / 1_000_000).toFixed(1)} MB`;
 }
