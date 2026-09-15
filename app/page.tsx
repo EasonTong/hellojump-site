@@ -8,10 +8,11 @@ import DownloadPanel from "@/components/DownloadPanel";
 
 /**
  * 首页会读远程榜单做「当前纪录」和榜前预览。
- * revalidate = 60：构建时先渲染一份，之后每 60 秒后台再生一次；
+ *
+ * 站点是**静态导出**（GitHub Pages 没有服务端），所以没有 ISR / revalidate ——
+ * 数据在构建时固化成快照，靠 GitHub Action 的定时构建（每小时）来刷新。
  * 取不到数据时 data 层返回空数组，页面走空状态，构建不会失败。
  */
-export const revalidate = 60;
 
 const STEPS = [
   {

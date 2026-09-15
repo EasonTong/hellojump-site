@@ -11,8 +11,8 @@ export const metadata = {
     "HelloJump 抛手机测高全球榜：每人最好成绩、昵称、机型、滞空时间与高度。",
 };
 
-/** 每 60 秒再生一次；构建时先渲染快照，取不到数据也照样出页面 */
-export const revalidate = 60;
+// 静态导出：没有 ISR，数据在构建时固化，靠 GitHub Action 的定时构建刷新。
+// 取不到数据也照样出页面 —— data 层返回空数组，页面走空状态。
 
 export default async function LeaderboardPage() {
   const items = toLeaderboardItems(

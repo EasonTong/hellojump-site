@@ -10,8 +10,8 @@ export const metadata = {
   description: "HelloJump 抛手机测高的公告、版本更新与活动信息。",
 };
 
-/** 公告要改完尽快生效，60 秒足够 */
-export const revalidate = 60;
+// 静态导出：没有 ISR。公告改完要等下一次定时构建（≤1 小时）才反映到官网上 ——
+// 这是静态托管换来的代价，换的是没有服务端、不花一分钱。
 
 export default async function AnnouncementsPage() {
   const items = toAnnouncementItems(await getAnnouncements());
