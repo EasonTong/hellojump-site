@@ -97,3 +97,17 @@ export function formatRelativeTime(
 
   return formatDate(iso);
 }
+
+/**
+ * 安装包体积：字节 → MB。
+ *
+ * 没值返回 `null` 而不是 `"0 MB"` —— 调用方据此决定整个元素显不显示，
+ * 免得后台还没填体积时页面上出现一个「0 MB」。
+ */
+export function formatSize(
+  bytes: number | string | null | undefined,
+): string | null {
+  const n = toNumber(bytes);
+  if (n === null || n <= 0) return null;
+  return `${(n / 1024 / 1024).toFixed(1)} MB`;
+}

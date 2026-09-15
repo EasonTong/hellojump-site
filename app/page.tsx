@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { getLeaderboard } from "@/lib/data";
+import { getLeaderboard, getReleases } from "@/lib/data";
 import { toLeaderboardItems } from "@/lib/view";
 import PrincipleDiagram from "@/components/PrincipleDiagram";
 import ScreenshotSlot from "@/components/ScreenshotSlot";
 import RankBadge from "@/components/RankBadge";
+import DownloadPanel from "@/components/DownloadPanel";
 
 /**
  * 首页会读远程榜单做「当前纪录」和榜前预览。
@@ -146,7 +147,7 @@ function FeatureIcon({ name }: { name: string }) {
 
 export default async function HomePage() {
   const now = Date.now();
-  const rows = await getLeaderboard(50);
+  const [rows, releases] = await Promise.all([getLeaderboard(50), getReleases()]);
   const items = toLeaderboardItems(rows, now);
   const top = items[0];
   const preview = items.slice(0, 5);
@@ -495,29 +496,7 @@ export default async function HomePage() {
         className="scroll-mt-24 border-t border-line bg-white py-16 md:py-20"
       >
         <div className="shell">
-          <div className="card mx-auto max-w-3xl border-dashed p-10 text-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-brand-container px-3 py-1 text-xs font-medium text-on-brand-container">
-              即将开放
-            </span>
-            <h2 className="mt-5 text-2xl font-bold tracking-tight">
-              下载入口尚未开放
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl leading-relaxed text-muted">
-              目前正在处理发布渠道与素材授权等事项，APK 与安装说明都不在这里提供。
-              开放后会在公告页第一时间说明。
-            </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link href="/announcements" className="btn-primary">
-                查看公告与更新
-              </Link>
-              <a href="#howto" className="btn-secondary">
-                先看玩法
-              </a>
-            </div>
-            <p className="mt-6 text-xs text-muted">
-              本页刻意不放任何第三方下载链接或镜像地址。
-            </p>
-          </div>
+          <DownloadPanel releases={releases} />
         </div>
       </section>
     </>
